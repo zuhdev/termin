@@ -1,0 +1,55 @@
+name: verify-build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: anchor
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache solana-verify binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin
+          key: solana-verify-${{ runner.os }}
+
+      - name: Install solana-verify
+        run: |
+          if ! command -v solana-verify >/dev/null 2>&1; then
+            cargo install solana-verify --locked
+          fi
+
+      - name: Deterministic build
+        run: |
+          echo "Using toolchain pinned in anchor/Cargo.toml:"
+          grep -A1 "workspace.metadata.cli" Cargo.toml
+          solana-verify build --library-name termin
+
+      - name: Compare built artifact with devnet deployment
+        run: |
+          set -euo pipefail
+          ARTIFACT_HASH=$(solana-verify get-executable-hash target/deploy/termin.so | awk '{print $NF}')
+          ONCHAIN_HASH=$(solana-verify get-program-hash -u https://api.devnet.solana.com GhEAovtiaJj48DwEwXWfDEqkxrPhbLfbryTHNifQEhZ1 | awk '{print $NF}')
+          echo "artifact hash : $ARTIFACT_HASH"
+          echo "on-chain hash : $ONCHAIN_HASH"
+          if [ "$ARTIFACT_HASH" != "$ONCHAIN_HASH" ]; then
+            echo "::error::Hash mismatch — the devnet program does not match this commit"
+            exit 1
+          fi
+          echo "OK: devnet deployment provably matches this commit"
+
+      - name: Upload deterministic artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: termin-verified-build
+          path: anchor/target/deploy/termin.so
+          if-no-files-found: error
