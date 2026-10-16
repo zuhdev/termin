@@ -40,7 +40,7 @@ Late fee: `floor(amount · fee_bps_per_day · full_days_late / 10_000)`, capped 
 
 The devnet bytecode is deterministic and reproducible from this repo using the official Solana verifiable-build image:
 
-- **Program hash:** `a5fb39dd200dbf2b247a1bbdc73bcfe2476267a31175e1bdcd943d0c212c686f` (the trailing-zero-trimmed hash `solana-verify` compares — same function for the file and for the on-chain program)
+- **Program hash:** `9a44d237b63fdd7fa34eec5672bad1e0bd0359117609b96a82ffed82191fc6f9` (the trailing-zero-trimmed hash `solana-verify` compares — same function for the file and for the on-chain program)
 - Toolchain pinned via `[workspace.metadata.cli] solana = "4.3.0"` in `anchor/Cargo.toml`; `Cargo.lock` is committed.
 
 Anyone can verify (requires Docker):

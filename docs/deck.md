@@ -89,7 +89,7 @@ Late fee = `amount × bps/day × full_days_late`, capped — enforced by the pro
 ## 8. What we built (hackathon)
 
 - **Anchor program** — 7 instructions, 11 LiteSVM tests, deployed to devnet
-- **Reproducible build** — pinned 4.3.0 toolchain; `a5fb39dd…` artifact ≡ on-chain, re-checked in CI on every push
+- **Reproducible build** — pinned 4.3.0 toolchain; `9a44d237…` artifact ≡ on-chain, re-checked in CI on every push
 - **Codama-generated TS client** — type-safe end-to-end
 - **Next.js app** — wallet-standard, cluster switch, create/authorize/collect/advance/revoke, live overdue fees
 - **Demo seeder** — mint, wallets, overdue + LP-advanced scenarios in one command

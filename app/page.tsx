@@ -542,7 +542,7 @@ export default function Landing() {
               className="font-mono"
               title="Reproducible build hash (solana-verify)"
             >
-              build a5fb39dd…
+              build 9a44d237…
             </span>
             <a
               href={programUrl}
