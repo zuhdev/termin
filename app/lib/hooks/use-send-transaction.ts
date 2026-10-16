@@ -4,10 +4,12 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { useSWRConfig } from "swr";
 import { toast } from "sonner";
 import type { Instruction, TransactionSigner } from "@solana/kit";
-import { createClient } from "@solana/kit-client-rpc";
 import { useWallet } from "../wallet/context";
 import { useCluster } from "../../components/cluster-context";
-import { getClusterUrl, getClusterWsConfig } from "../solana-client";
+import { getClusterUrl } from "../solana-client";
+import { sendAndConfirmInstructions } from "../send-and-confirm";
+
+const STILL_WAITING_MS = 30_000;
 
 /**
  * Returns the wallet signer wrapped with a hook fired the moment signing
@@ -57,22 +59,28 @@ export function useSendTransaction() {
           description: `Waiting for ${cluster} to finalize`,
         });
       };
+      const stillWaiting = setTimeout(() => {
+        toast.loading("Still waiting for wallet approval", {
+          id: toastId,
+          description: "Check your wallet app — keep this tab open",
+        });
+      }, STILL_WAITING_MS);
 
       try {
-        const txClient = createClient({
-          url: getClusterUrl(cluster),
-          rpcSubscriptionsConfig: getClusterWsConfig(cluster),
-          payer: signer,
-        });
-
-        const result = await txClient.sendTransaction([...instructions]);
+        const signature = await sendAndConfirmInstructions(
+          getClusterUrl(cluster),
+          signer,
+          instructions,
+          { onSigned: () => onSignedRef.current() }
+        );
         toast.dismiss(toastId);
         mutate((key: unknown) => Array.isArray(key) && key[0] === "balance");
-        return result.context.signature;
+        return signature;
       } catch (err) {
         toast.dismiss(toastId);
         throw err;
       } finally {
+        clearTimeout(stillWaiting);
         setIsSending(false);
       }
     },

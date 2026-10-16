@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@solana-mobile/wallet-standard-mobile": "^0.7.0",
+    "@solana-program/compute-budget": "^0.15.0",
     "@solana/kit": "^6.3.0",
     "@solana/kit-client-rpc": "^0.7.0",
     "@solana/kit-plugin-rpc": "^0.7.0",
