@@ -1,0 +1,255 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #f7f6f2;
+  --surface: #fffefb;
+  --surface-2: #f0eee7;
+  --surface-3: #e9e6dc;
+  --ink: #1a180f;
+  --ink-2: #57544a;
+  --ink-3: #8b877a;
+  --line: #e5e1d5;
+  --line-strong: #d6d1c0;
+  --accent: #0e7b4c;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(14, 123, 76, 0.1);
+  --warn: #96630a;
+  --warn-soft: rgba(150, 99, 10, 0.12);
+  --danger: #b4231a;
+  --danger-soft: rgba(180, 35, 26, 0.1);
+  --info: #2f56c4;
+  --info-soft: rgba(47, 86, 196, 0.1);
+  --ring: rgba(14, 123, 76, 0.4);
+  --shadow-card:
+    0 1px 2px rgba(26, 24, 15, 0.04), 0 8px 24px -12px rgba(26, 24, 15, 0.12);
+  --shadow-pop:
+    0 2px 6px rgba(26, 24, 15, 0.06), 0 24px 48px -16px rgba(26, 24, 15, 0.22);
+  --radius: 12px;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display:
+    var(--font-space-grotesk), var(--font-inter), system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+}
+
+.dark {
+  --bg: #0c0d0a;
+  --surface: #141511;
+  --surface-2: #1b1d17;
+  --surface-3: #23251d;
+  --ink: #eceadf;
+  --ink-2: #a3a094;
+  --ink-3: #6e6b60;
+  --line: #262820;
+  --line-strong: #34372c;
+  --accent: #3dd68c;
+  --accent-ink: #062516;
+  --accent-soft: rgba(61, 214, 140, 0.12);
+  --warn: #e5a83c;
+  --warn-soft: rgba(229, 168, 60, 0.13);
+  --danger: #ef6f66;
+  --danger-soft: rgba(239, 111, 102, 0.12);
+  --info: #82a5ff;
+  --info-soft: rgba(130, 165, 255, 0.12);
+  --ring: rgba(61, 214, 140, 0.45);
+  --shadow-card:
+    0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  --shadow-pop:
+    0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 56px -16px rgba(0, 0, 0, 0.7);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+  --font-serif: var(--font-serif);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+  --animate-fade-up: fade-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-pop: pop 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
+  .dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.4;
+  }
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+@utility label-xs {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+@utility bg-texture {
+  background-image:
+    radial-gradient(
+      ellipse 72% 46% at 50% -6%,
+      var(--accent-soft) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 38% 30% at 84% -8%,
+      var(--info-soft) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 34% 26% at 12% -9%,
+      var(--warn-soft) 0%,
+      transparent 72%
+    ),
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    72px 72px,
+    72px 72px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 480px);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 480px);
+  opacity: 0.6;
+}
+
+.dark .bg-texture {
+  opacity: 0.45;
+}
+
+@utility skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--surface-2) 40%,
+    var(--surface-3) 50%,
+    var(--surface-2) 60%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+[data-sonner-toaster] {
+  --normal-bg: var(--surface) !important;
+  --normal-border: var(--line) !important;
+  --normal-text: var(--ink) !important;
+  --success-bg: var(--surface) !important;
+  --success-border: var(--line) !important;
+  --success-text: var(--ink) !important;
+  --error-bg: var(--surface) !important;
+  --error-border: var(--line) !important;
+  --error-text: var(--ink) !important;
+  font-family: var(--font-sans) !important;
+}
+
+[data-sonner-toast] {
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-pop) !important;
+  font-size: 13px !important;
+  color: var(--ink) !important;
+}
+
+[data-sonner-toast] [data-description] {
+  color: var(--ink-2) !important;
+}
