@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { address, type Address } from "@solana/kit";
 import { toast } from "sonner";
-import { useWallet } from "../lib/wallet/context";
 import { useSendTransaction } from "../lib/hooks/use-send-transaction";
 import { parseTransactionError } from "../lib/errors";
 import { DEMO_MINT, parseTokenAmount } from "../lib/termin";
@@ -34,8 +33,7 @@ export function CreateInvoiceDialog({
   onClose: () => void;
   onCreated: () => void;
 }) {
-  const { signer } = useWallet();
-  const { send, isSending } = useSendTransaction();
+  const { signer, send, isSending } = useSendTransaction();
   const { getExplorerUrl } = useCluster();
   const payerRef = useRef<HTMLInputElement>(null);
 

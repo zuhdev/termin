@@ -118,8 +118,8 @@ export function InvoiceRow({
   onToggle: () => void;
   onChanged: () => void;
 }) {
-  const { wallet, signer } = useWallet();
-  const { send, isSending } = useSendTransaction();
+  const { wallet } = useWallet();
+  const { send, isSending, signer } = useSendTransaction();
   const { getExplorerUrl, cluster } = useCluster();
 
   const [advanceIn, setAdvanceIn] = useState("");
