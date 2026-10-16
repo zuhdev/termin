@@ -11,7 +11,7 @@ Self-collecting B2B invoices on Solana.
 **HackYeah — Superteam Poland Track**
 
 Devnet program: `GhEAovtiaJj48DwEwXWfDEqkxrPhbLfbryTHNifQEhZ1`
-Repo: `[GITHUB URL]` · Video: `[VIDEO URL]`
+Repo: https://github.com/zuhdev/termin · Video: `[VIDEO URL]`
 
 ---
 
@@ -111,7 +111,7 @@ Late fee = `amount × bps/day × full_days_late`, capped — enforced by the pro
 
 `[NAMES]`
 
-- Repo: `[GITHUB URL]`
+- Repo: https://github.com/zuhdev/termin
 - Devnet program: `GhEAovtiaJj48DwEwXWfDEqkxrPhbLfbryTHNifQEhZ1`
 - Video (3 min): `[VIDEO URL]`
 - Try it: `npm install && npm run demo:devnet && npm run dev`
