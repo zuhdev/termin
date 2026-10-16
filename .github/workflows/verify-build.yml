@@ -34,6 +34,13 @@ jobs:
           grep -A1 "workspace.metadata.cli" Cargo.toml
           solana-verify build --library-name termin
 
+      - name: Upload deterministic artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: termin-verified-build
+          path: anchor/target/deploy/termin.so
+          if-no-files-found: error
+
       - name: Compare built artifact with devnet deployment
         run: |
           set -euo pipefail
@@ -46,10 +53,3 @@ jobs:
             exit 1
           fi
           echo "OK: devnet deployment provably matches this commit"
-
-      - name: Upload deterministic artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: termin-verified-build
-          path: anchor/target/deploy/termin.so
-          if-no-files-found: error
