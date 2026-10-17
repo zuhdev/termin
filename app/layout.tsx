@@ -1,23 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Inter, Newsreader, Space_Grotesk } from "next/font/google";
+import { Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./components/providers";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  display: "swap",
 });
 
 const newsreader = Newsreader({
@@ -57,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${newsreader.variable} antialiased`}
+        className={`${geistMono.variable} ${newsreader.variable} antialiased`}
       >
         <Providers>{children}</Providers>
       </body>
