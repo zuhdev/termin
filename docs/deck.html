@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>termin — pitch deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0d0a;
+    --panel: #14171a;
+    --panel-2: #191d20;
+    --line: rgba(255, 255, 255, 0.09);
+    --line-2: rgba(255, 255, 255, 0.16);
+    --ink: #f3f2ec;
+    --ink-2: rgba(243, 242, 236, 0.72);
+    --ink-3: rgba(243, 242, 236, 0.5);
+    --mint: #7fe3a6;
+    --emerald: #55c48d;
+    --emerald-deep: #0d7a4b;
+    --emerald-deep-2: #085c39;
+    --amber: #e8b45c;
+    --sans: "Inter", system-ui, sans-serif;
+    --display: "Space Grotesk", var(--sans);
+    --serif: "Newsreader", Georgia, serif;
+    --mono: "Geist Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #000; }
+  body { font-family: var(--sans); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: 1280px 720px; margin: 0; }
+  .slide {
+    position: relative; width: 1280px; height: 720px; overflow: hidden;
+    background: var(--bg); page-break-after: always;
+  }
+  .slide:last-child { page-break-after: auto; }
+  .pad { position: absolute; inset: 0; padding: 56px 72px; display: flex; flex-direction: column; }
+  .kicker {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+  h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: -0.02em; }
+  h2 { font-size: 40px; line-height: 1.08; }
+  .it { font-family: var(--serif); font-style: italic; font-weight: 400; }
+  .mint { color: var(--mint); }
+  .amber { color: var(--amber); }
+  .small { font-size: 15px; line-height: 1.55; color: var(--ink-2); }
+  .slide-foot {
+    position: absolute; left: 72px; right: 72px; bottom: 26px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+    border-top: 1px solid var(--line); padding-top: 12px;
+  }
+  .chiprow { display: flex; gap: 10px; }
+  .chip {
+    font-family: var(--mono); font-size: 11.5px; color: var(--ink-2);
+    border: 1px solid var(--line-2); border-radius: 999px; padding: 7px 14px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 99px; background: var(--mint); box-shadow: 0 0 10px rgba(127, 227, 166, 0.8); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+  .grid { display: grid; gap: 16px; }
+  .mono { font-family: var(--mono); }
+
+  /* slide 1 — hero */
+  .hero { background: linear-gradient(135deg, var(--emerald-deep) 0%, var(--emerald-deep-2) 100%); }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(600px 400px at 82% 10%, rgba(127,227,166,0.32), transparent 60%),
+      radial-gradient(700px 500px at 8% 100%, rgba(4,47,28,0.75), transparent 65%);
+  }
+  .hero .pad { justify-content: center; gap: 26px; z-index: 1; }
+  .hero h1 { font-size: 74px; line-height: 1.02; letter-spacing: -0.025em; color: #f6fff9; }
+  .hero .sub { max-width: 720px; font-size: 17px; line-height: 1.6; color: rgba(246,255,249,0.85); }
+  .hero .meta {
+    display: flex; gap: 26px; align-items: center;
+    font-family: var(--mono); font-size: 12px; color: rgba(246,255,249,0.75);
+  }
+  .hero .footline {
+    position: absolute; left: 72px; right: 72px; bottom: 26px; z-index: 1;
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 11px; color: rgba(246,255,249,0.6);
+  }
+
+  /* slide 2 — stats */
+  .stat-tile { border-radius: 18px; padding: 28px; border: 1px solid var(--line); }
+  .stat-num { font-family: var(--display); font-size: 52px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; margin-bottom: 12px; }
+
+  /* slide 4 — steps */
+  .step-num {
+    font-family: var(--mono); font-size: 12px; color: var(--bg);
+    background: var(--mint); border-radius: 999px; width: 26px; height: 26px;
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 500;
+  }
+  .step h3 { font-family: var(--display); font-size: 19px; margin: 14px 0 8px; font-weight: 600; }
+
+  /* slide 5 — shots */
+  .shot { border-radius: 16px; border: 1px solid var(--line-2); width: 100%; display: block; }
+
+  /* slide 6 — flow */
+  .flow { display: grid; gap: 14px; }
+  .flow-row { display: flex; align-items: center; gap: 14px; }
+  .box {
+    border: 1px solid var(--line-2); border-radius: 14px; padding: 14px 18px;
+    font-family: var(--mono); font-size: 13px; color: var(--ink); background: var(--panel);
+    white-space: nowrap;
+  }
+  .box.em { background: rgba(127, 227, 166, 0.1); border-color: rgba(127, 227, 166, 0.4); color: var(--mint); }
+  .arrow { font-family: var(--mono); color: var(--ink-3); font-size: 13px; }
+  .formula {
+    font-family: var(--mono); font-size: 14px; color: var(--ink-2);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px;
+  }
+
+  /* slide 10 */
+  .link-row { display: flex; gap: 14px; align-items: baseline; font-size: 16px; }
+  .link-row .k { font-family: var(--mono); font-size: 12px; color: var(--ink-3); width: 110px; }
+  .link-row .v { font-family: var(--mono); font-size: 15px; color: var(--mint); }
+</style>
+</head>
+<body>
+
+<!-- 1 · title -->
+<section class="slide hero">
+  <div class="pad">
+    <div class="chiprow">
+      <span class="chip"><span class="dot"></span>Live on devnet</span>
+      <span class="chip">payer-signed mandate</span>
+      <span class="chip">enforced on-chain</span>
+      <span class="chip">no backend</span>
+    </div>
+    <h1>Faktury, które<br><span class="it">płacą się same.</span></h1>
+    <p class="sub">Self-collecting B2B invoices on Solana. The debtor signs a payment mandate once — the payment pulls itself on the due date, late fees enforce themselves on-chain, and investors can advance cash against unpaid invoices.</p>
+    <div class="meta">
+      <span>HackYeah 2026 · Superteam Poland track</span>
+      <span>program GhEAovtia…fQEhZ1</span>
+      <span>github.com/zuhdev/termin</span>
+    </div>
+  </div>
+  <div class="footline"><span>termin — the invoice that collects itself</span><span>1 / 10</span></div>
+</section>
+
+<!-- 2 · problem -->
+<section class="slide">
+  <div class="pad" style="gap:26px;">
+    <p class="kicker">The problem · zatory płatnicze</p>
+    <h2>Payment terms are <span class="it">polite fiction.</span></h2>
+    <div class="grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 8px;">
+      <div class="stat-tile" style="background: rgba(232,180,92,0.08); border-color: rgba(232,180,92,0.3);">
+        <div class="stat-num amber">69%</div>
+        <p class="small">of Polish companies pay suppliers late — the 2nd worst rate in the EU <span class="mono" style="font-size:12px;">(Intrum)</span></p>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">30–90 days</div>
+        <p class="small">a small subcontractor waits for cash while payroll runs monthly. Chasing payments is manual — and often never happens.</p>
+      </div>
+      <div class="stat-tile" style="background: rgba(85,196,141,0.08); border-color: rgba(85,196,141,0.35);">
+        <div class="stat-num mint">2026</div>
+        <p class="small">KSeF makes e-invoicing mandatory for every Polish business — invoices go fully digital, but payment terms stay stale.</p>
+      </div>
+    </div>
+    <p class="small" style="margin-top:12px; font-size:17px;">“The invoice exists on-chain. <span class="it">Why can’t the payment live there too?</span>”</p>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>2 / 10</span></div>
+</section>
+
+<!-- 3 · user -->
+<section class="slide">
+  <div class="pad" style="gap:24px;">
+    <p class="kicker">Target user</p>
+    <h2>Marek — <span class="it">IT subcontractor</span>, Kraków, 10 people</h2>
+    <div class="grid" style="grid-template-columns: 1fr 1fr; margin-top: 6px;">
+      <div class="card" style="display:flex; flex-direction:column; gap:16px;">
+        <p class="kicker">Today</p>
+        <p class="small" style="font-size:16px;">40% of invoices arrive 30+ days late · ~2h/month spent on reminders and calls</p>
+        <p class="mono" style="font-size:14px; color: var(--ink-2); line-height: 2;">
+          send invoice → <span class="amber">wait</span> → remind → <span class="amber">wait</span> → maybe paid
+        </p>
+      </div>
+      <div class="card" style="background: rgba(127,227,166,0.07); border-color: rgba(127,227,166,0.35); display:flex; flex-direction:column; gap:16px;">
+        <p class="kicker" style="color: var(--mint);">With termin</p>
+        <p class="small" style="font-size:16px;">Send once — the money arrives on the due date, automatically. Late fees accrue on-chain, visibly.</p>
+        <p class="mono" style="font-size:14px; color: var(--mint); line-height: 2;">
+          send once → <span class="mint">protocol collects + fees</span> → paid
+        </p>
+      </div>
+    </div>
+    <p class="small">The debtor keeps control: they sign the mandate, can revoke before the due date, and fees are transparent and capped by the program.</p>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>3 / 10</span></div>
+</section>
+
+<!-- 4 · solution -->
+<section class="slide">
+  <div class="pad" style="gap:22px;">
+    <p class="kicker">Solution</p>
+    <h2>Four moves, <span class="it">all on-chain.</span></h2>
+    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="card step"><span class="step-num">1</span>
+        <h3>Issuer creates the invoice</h3>
+        <p class="small">Amount, due date, and late-fee terms (e.g. 0.5%/day, capped at 10%) live in a PDA. No signup, no accounts.</p>
+      </div>
+      <div class="card step"><span class="step-num">2</span>
+        <h3>Payer signs once</h3>
+        <p class="small">One signature approves the program’s vault PDA as an SPL delegate: “pull <span class="mono">amount + max fee</span> on the due date.”</p>
+      </div>
+      <div class="card step"><span class="step-num">3</span>
+        <h3>Collection is permissionless</h3>
+        <p class="small">At due, anyone can trigger it — the issuer, a bot, KSeF middleware. The program signs as delegate and the fee is computed on-chain.</p>
+      </div>
+      <div class="card step"><span class="step-num">4</span>
+        <h3>Optional advance (LP)</h3>
+        <p class="small">An investor pays the issuer today at a discount; at collection the waterfall is payer → LP → issuer. Positions are priced, not promised.</p>
+      </div>
+    </div>
+    <p class="small" style="font-size:16px; margin-top:4px;">Like a standing order — <span class="it">but for invoices, with teeth.</span></p>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>4 / 10</span></div>
+</section>
+
+<!-- 5 · demo -->
+<section class="slide">
+  <div class="pad" style="gap:18px;">
+    <p class="kicker">Live on devnet</p>
+    <h2>The console, <span class="it">wired to the chain.</span></h2>
+    <div class="grid" style="grid-template-columns: 600px 1fr; margin-top:4px;">
+      <img class="shot" src="deck-console.png" alt="termin console with live devnet invoices">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <img class="shot" src="deck-landing.png" alt="termin landing page">
+        <div class="card" style="padding:16px 18px;">
+          <p class="small" style="font-size:13.5px; line-height: 1.6;">
+            Every row is a live Solana account: overdue fee <span class="amber mono">+50 tUSD</span> accruing on invoice 1008, open mandates awaiting collection, LP-advanced settlement — no mock data, no database.
+          </p>
+        </div>
+      </div>
+    </div>
+    <p class="mono" style="font-size:12px; color: var(--ink-3); margin-top:4px;">3-min walkthrough · [video URL] · explorer.solana.com → program GhEAovtia…fQEhZ1 (devnet)</p>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>5 / 10</span></div>
+</section>
+
+<!-- 6 · how it works -->
+<section class="slide">
+  <div class="pad" style="gap:20px;">
+    <p class="kicker">How it works</p>
+    <h2>7 instructions. <span class="it">One PDA per invoice.</span></h2>
+    <div class="flow" style="margin-top:6px;">
+      <div class="flow-row">
+        <span class="box">issuer</span><span class="arrow">—create→</span><span class="box em">invoice PDA</span><span class="arrow">←authorize—</span><span class="box">payer <span style="color:var(--ink-3)">(SPL delegate = vault PDA)</span></span>
+      </div>
+      <div class="flow-row"><span class="arrow" style="padding-left: 8px;">due date reached · anyone may collect</span></div>
+      <div class="flow-row">
+        <span class="box">payer</span><span class="arrow">—amount + fee→</span><span class="box">issuer</span><span class="arrow" style="color: var(--ink-3);">│ no LP</span>
+      </div>
+      <div class="flow-row">
+        <span class="box">payer</span><span class="arrow">—payout→</span><span class="box">LP</span><span class="arrow">and</span><span class="box">issuer <span style="color:var(--ink-3)">(total − payout)</span></span><span class="arrow" style="color: var(--ink-3);">│ advanced</span>
+      </div>
+    </div>
+    <div class="formula" style="margin-top:10px;">
+      late_fee = floor(amount × fee_bps_per_day × full_days_late / 10 000) · capped at fee_cap_bps<br>
+      <span style="color: var(--ink-3);">enforced by the program — not a promise · transfers via <span class="mint">transfer_checked</span> signed by the vault_authority PDA</span>
+    </div>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>6 / 10</span></div>
+</section>
+
+<!-- 7 · why solana -->
+<section class="slide">
+  <div class="pad" style="gap:24px;">
+    <p class="kicker">Why this works on Solana</p>
+    <h2>Cheap enough for <span class="it">real invoices.</span></h2>
+    <div class="grid" style="grid-template-columns: 1fr 1fr; margin-top: 6px;">
+      <div class="card" style="display:flex; flex-direction:column; gap:8px;">
+        <p class="mono mint" style="font-size:12px;">economics</p>
+        <p class="small" style="font-size:15.5px;">Fractional-cent fees make a 5,000 tUSD invoice economically viable — unlike L1 smart contracts.</p>
+      </div>
+      <div class="card" style="display:flex; flex-direction:column; gap:8px;">
+        <p class="mono mint" style="font-size:12px;">primitive</p>
+        <p class="small" style="font-size:15.5px;">The SPL token delegate is the native “pull payment” primitive — a mandate is one signature.</p>
+      </div>
+      <div class="card" style="display:flex; flex-direction:column; gap:8px;">
+        <p class="mono mint" style="font-size:12px;">permissionless</p>
+        <p class="small" style="font-size:15.5px;">Collection can be triggered by anyone: the issuer, a cron bot, or KSeF e-invoicing middleware.</p>
+      </div>
+      <div class="card" style="display:flex; flex-direction:column; gap:8px;">
+        <p class="mono mint" style="font-size:12px;">disputes</p>
+        <p class="small" style="font-size:15.5px;">Fee math lives on-chain — no “the reminder never arrived,” no arguments about interest.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>7 / 10</span></div>
+</section>
+
+<!-- 8 · built -->
+<section class="slide">
+  <div class="pad" style="gap:20px;">
+    <p class="kicker">What we built this hackathon</p>
+    <h2>Small enough to audit. <span class="it">Real enough to trust.</span></h2>
+    <div class="grid" style="grid-template-columns: 1fr; gap: 12px; margin-top: 6px;">
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint">program</span>&nbsp;&nbsp;Anchor — 7 instructions, 11 LiteSVM tests, deployed to devnet</p></div>
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint">client</span>&nbsp;&nbsp;Codama-generated TypeScript client — type-safe end to end</p></div>
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint">app</span>&nbsp;&nbsp;Next.js — Wallet Standard, cluster switch, full lifecycle UI, live overdue-fee meter</p></div>
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint">demo</span>&nbsp;&nbsp;one command seeds mint, wallets, invoices, LP advance: <span class="mono">npm run demo:devnet</span></p></div>
+      <div class="card" style="padding:18px 22px; background: rgba(127,227,166,0.07); border-color: rgba(127,227,166,0.35);"><p class="small" style="font-size:15.5px;"><span class="mono mint">verified build</span>&nbsp;&nbsp;<span class="mono">9a44d237…</span> — artifact ≡ devnet bytecode, re-checked in CI on every push</p></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>8 / 10</span></div>
+</section>
+
+<!-- 9 · roadmap -->
+<section class="slide">
+  <div class="pad" style="gap:24px;">
+    <p class="kicker">Roadmap</p>
+    <h2>From devnet demo to <span class="it">payment rail.</span></h2>
+    <div class="grid" style="grid-template-columns: 1fr; gap: 12px; margin-top: 8px;">
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint" style="display:inline-block; width:190px;">KSeF import</span> auto-create invoices from official e-invoice XML (2026 mandate)</p></div>
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint" style="display:inline-block; width:190px;">collection crank</span> a bot collects on time, every time — zero-touch</p></div>
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint" style="display:inline-block; width:190px;">reputation passport</span> on-chain paid / revoked / collected history per payer</p></div>
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint" style="display:inline-block; width:190px;">Token-2022</span> multi-delegate and per-invoice mandate accounts</p></div>
+      <div class="card" style="padding:18px 22px;"><p class="small" style="font-size:15.5px;"><span class="mono mint" style="display:inline-block; width:190px;">recurring</span> subscription-style invoices for retainer contracts</p></div>
+    </div>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>9 / 10</span></div>
+</section>
+
+<!-- 10 · links -->
+<section class="slide">
+  <div class="pad" style="gap:26px;">
+    <p class="kicker">Team &amp; links</p>
+    <h2>Try it in <span class="it">two commands.</span></h2>
+    <div class="card" style="padding: 22px 26px; display:flex; flex-direction:column; gap:14px; margin-top: 6px;">
+      <div class="link-row"><span class="k">repo</span><span class="v">github.com/zuhdev/termin</span></div>
+      <div class="link-row"><span class="k">program</span><span class="v">GhEAovtiaJj48DwEwXWfDEqkxrPhbLfbryTHNifQEhZ1 <span style="color: var(--ink-3);">(devnet)</span></span></div>
+      <div class="link-row"><span class="k">video</span><span class="v">[video URL]</span></div>
+      <div class="link-row"><span class="k">run</span><span class="v" style="color: var(--ink-2);">npm install &amp;&amp; npm run demo:devnet &amp;&amp; npm run dev</span></div>
+    </div>
+    <p class="small">Team: [names]</p>
+    <p style="font-family: var(--serif); font-style: italic; font-size: 34px; margin-top: 10px;">termin — <span class="mint">the invoice that collects itself.</span></p>
+  </div>
+  <div class="slide-foot"><span>termin — HackYeah 2026</span><span>10 / 10</span></div>
+</section>
+
+</body>
+</html>
