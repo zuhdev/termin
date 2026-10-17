@@ -6,6 +6,19 @@ Built for **HackYeah — Superteam Poland Track**.
 
 - **Program (devnet):** `GhEAovtiaJj48DwEwXWfDEqkxrPhbLfbryTHNifQEhZ1`
 - **App:** `npm run dev` → http://localhost:3000 — landing at `/`, console at `/app` (select Devnet in the header)
+- **Live demo:** `https://<VERCEL-URL>/app`
+
+## Try it live (for judges)
+
+The devnet prototype is fully interactive — every button is a real Solana transaction.
+
+1. Open the console: `https://<VERCEL-URL>/app` (Devnet).
+2. Connect any Solana wallet (Phantom, Solflare, Backpack, …).
+3. Click **Get test tUSD** in the console header — the built-in faucet mints 20,000 demo tUSD to your wallet (one request per minute, devnet only). Do this once per wallet/account you want to play.
+4. **As seller:** _New invoice_ → sign. **As buyer:** connect a second wallet or Phantom account, open the invoice → _Authorize mandate_ → past the due date, _Collect_ (anyone can). **As lender:** on an authorized invoice, fill in the advance terms → _Advance_ (funded by the tUSD from step 3).
+5. Every action links to the Solana Explorer; the program is at `GhEAov…EhZ1`.
+
+The faucet is the only server-side piece (a stateless route that signs a `mintTo` with the demo mint authority); all invoice logic lives in the on-chain program.
 
 ## The problem
 
@@ -117,6 +130,8 @@ solana program deploy target/deploy/termin.so \
 `anchor build -- --arch v0` remains fine for localnet/LiteSVM work.
 
 Then seed devnet: `npm run demo:devnet`.
+
+For the in-app faucet, set two environment variables in the deployment: `NEXT_PUBLIC_DEMO_MINT` (the demo mint address) and `FAUCET_SECRET_KEY` (the JSON keypair array of the mint authority — the contents of `demo-keys/issuer.json`). Locally the faucet falls back to reading `demo-keys/issuer.json` directly, and `npx tsx scripts/mint-to.ts <wallet> [amount]` mints manually.
 
 ## Wallet support
 

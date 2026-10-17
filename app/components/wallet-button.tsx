@@ -10,6 +10,7 @@ import { useSolanaClient } from "../lib/solana-client-context";
 import { lamportsToSolString } from "../lib/lamports";
 import { ellipsify } from "../lib/explorer";
 import { useCluster } from "./cluster-context";
+import { FaucetButton } from "./faucet-button";
 import { CopyButton, ExternalLinkIcon, Spinner } from "./ui";
 
 const POPULAR_WALLETS = [
@@ -243,6 +244,8 @@ export function WalletButton() {
               </button>
             )}
           </div>
+
+          <FaucetButton className="mt-2 w-full" />
 
           <button
             onClick={() => {

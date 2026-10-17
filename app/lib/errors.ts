@@ -1,7 +1,4 @@
-import {
-  isSolanaError,
-  SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM,
-} from "@solana/kit";
+import { SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM } from "@solana/kit";
 import {
   getTerminErrorMessage,
   TERMIN_ERROR__INVALID_AMOUNT,
@@ -33,7 +30,7 @@ const TERMIN_ERROR_CODES: Record<number, TerminError> = {
 };
 
 const SPL_TOKEN_ERRORS: Record<number, string> = {
-  1: "Insufficient token balance in the payer's account.",
+  1: "Insufficient tUSD balance — the account that must pay for this action has no (or not enough) demo tUSD. Use the faucet to top up.",
   4: "Token authority mismatch. If this payer authorized a newer invoice with the same token account, the older mandate was replaced — re-authorize and try again.",
   17: "The token account is frozen.",
 };
@@ -43,22 +40,73 @@ export function parseTransactionError(err: unknown): string {
     return "Transaction was rejected by the wallet.";
   }
 
-  if (
-    isSolanaError(err, SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM) &&
-    typeof err.context?.code === "number"
-  ) {
-    const tokenMessage = SPL_TOKEN_ERRORS[err.context.code];
-    if (tokenMessage !== undefined) {
-      return tokenMessage;
-    }
-    const code = TERMIN_ERROR_CODES[err.context.code];
-    if (code !== undefined) {
-      return getTerminErrorMessage(code);
-    }
+  const customCode = findCustomProgramErrorCode(err);
+  if (customCode !== undefined) {
+    const tokenMessage = SPL_TOKEN_ERRORS[customCode];
+    if (tokenMessage !== undefined) return tokenMessage;
+    const terminError = TERMIN_ERROR_CODES[customCode];
+    if (terminError !== undefined) return getTerminErrorMessage(terminError);
   }
 
   const message = getDeepestMessage(err);
   return message.length > 200 ? `${message.slice(0, 200)}...` : message;
+}
+
+/**
+ * Extracts a custom program error code from wallet- or RPC-shaped errors.
+ * Same-realm SolanaError instances expose it on `context`; wallets that
+ * bundle their own copy of @solana/errors only surface the old message
+ * format ("Solana error #4615026; Decode this error by running …") which
+ * embeds the context as base64 — decode that as a fallback.
+ */
+function findCustomProgramErrorCode(
+  err: unknown,
+  depth = 0
+): number | undefined {
+  if (depth > 4 || err === null || typeof err !== "object") return undefined;
+  const candidate = err as {
+    context?: unknown;
+    message?: unknown;
+    cause?: unknown;
+  };
+
+  const context = candidate.context;
+  if (context !== null && typeof context === "object") {
+    const ctx = context as Record<string, unknown>;
+    if (
+      typeof ctx.code === "number" &&
+      Number.isInteger(ctx.code) &&
+      (ctx.__code === SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM ||
+        typeof ctx.index === "number")
+    ) {
+      return ctx.code;
+    }
+  }
+
+  if (typeof candidate.message === "string") {
+    const fromHint = codeFromDecodeHint(candidate.message);
+    if (fromHint !== undefined) return fromHint;
+    const fromText = candidate.message.match(/custom program error: #(\d+)/);
+    if (fromText) return Number(fromText[1]);
+  }
+
+  return findCustomProgramErrorCode(candidate.cause, depth + 1);
+}
+
+function codeFromDecodeHint(message: string): number | undefined {
+  if (!message.includes("Decode this error by running")) return undefined;
+  const match = message.match(/['"]([A-Za-z0-9+/=]{8,})['"]/);
+  if (!match) return undefined;
+  try {
+    const params = new URLSearchParams(atob(match[1]));
+    const raw = params.get("code");
+    if (raw === null) return undefined;
+    const code = Number(raw);
+    if (Number.isInteger(code) && code >= 0) return code;
+  } catch {
+    // not a decodable context blob
+  }
+  return undefined;
 }
 
 function getDeepestMessage(err: unknown): string {

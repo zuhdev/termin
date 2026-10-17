@@ -4,10 +4,12 @@ import {
   getBase64Encoder,
   getProgramDerivedAddress,
   type Account,
+  type AccountSignerMeta,
   type Address,
   type Instruction,
   type Rpc,
   type SolanaRpcApi,
+  type TransactionSigner,
 } from "@solana/kit";
 import {
   decodeInvoice,
@@ -65,6 +67,31 @@ export async function createAtaIdempotentInstruction(
       { address: TOKEN_PROGRAM_ADDRESS, role: 0 },
     ],
     data: new Uint8Array([1]),
+  };
+}
+
+export function mintToInstruction(
+  mint: Address,
+  destination: Address,
+  authority: TransactionSigner,
+  amount: bigint
+): Instruction {
+  const data = new Uint8Array(9);
+  const dv = new DataView(data.buffer);
+  data[0] = 7;
+  dv.setBigUint64(1, amount, true);
+  return {
+    programAddress: TOKEN_PROGRAM_ADDRESS,
+    accounts: [
+      { address: mint, role: 1 },
+      { address: destination, role: 1 },
+      {
+        address: authority.address,
+        role: 2,
+        signer: authority,
+      } as AccountSignerMeta,
+    ],
+    data,
   };
 }
 

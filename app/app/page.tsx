@@ -9,6 +9,7 @@ import { AppHeader } from "../components/app-header";
 import { StatsStrip } from "../components/stats-strip";
 import { InvoiceTable } from "../components/invoice-table";
 import { CreateInvoiceDialog } from "../components/create-invoice-dialog";
+import { FaucetButton } from "../components/faucet-button";
 import { Button, PlusIcon } from "../components/ui";
 import { useCluster } from "../components/cluster-context";
 import { AddressLink } from "../components/ui";
@@ -40,17 +41,20 @@ export default function App() {
             <p className="mt-1.5 text-[13px] leading-relaxed text-ink-2">
               Self-collecting B2B invoices on Solana.{" "}
               {connected
-                ? "You are connected — issue, authorize, or collect below."
+                ? "You are connected — issue, authorize, or collect below. Acting as a buyer or lender? Grab test tUSD from the faucet."
                 : "Connect a wallet to issue, sign, or collect."}
             </p>
           </div>
-          <Button
-            variant="primary"
-            onClick={() => setDialogOpen(true)}
-            disabled={!connected}
-          >
-            <PlusIcon /> New invoice
-          </Button>
+          <div className="flex items-center gap-2">
+            <FaucetButton />
+            <Button
+              variant="primary"
+              onClick={() => setDialogOpen(true)}
+              disabled={!connected}
+            >
+              <PlusIcon /> New invoice
+            </Button>
+          </div>
         </section>
 
         <StatsStrip invoices={invoices} isLoading={isLoading} />
