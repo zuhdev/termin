@@ -3,6 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import type { Account } from "@solana/kit";
 import type { Invoice } from "../generated/termin";
+import type { InvoiceMandate } from "../lib/mandates";
 import { InvoiceRow } from "./invoice-row";
 import { displayStatus, type DisplayStatus } from "./status-chip";
 import { useNow } from "../lib/hooks/use-now";
@@ -78,16 +79,16 @@ function EmptyState({
     <div className="flex flex-col items-center gap-6 px-6 py-12 text-center">
       <div className="grid w-full max-w-2xl gap-3 sm:grid-cols-3">
         <StepCard step="1" title="Issue">
-          The seller creates the invoice on-chain — face value, due date, and
-          the late-fee schedule.
+          The seller creates the invoice on-chain: face value, due date, and the
+          late-fee schedule.
         </StepCard>
         <StepCard step="2" title="Authorize">
-          The buyer signs a one-time payment mandate. Revocable until the due
-          date, never after.
+          The buyer signs a one-time payment mandate. It can be revoked before
+          the due date, not after.
         </StepCard>
         <StepCard step="3" title="Collect">
-          On the due date anyone can trigger collection. Funds move buyer →
-          seller, the late fee enforces itself.
+          When the due date passes, anyone can trigger collection. Funds move
+          from buyer to seller, and the late fee enforces itself.
         </StepCard>
       </div>
       <div className="max-w-md">
@@ -95,7 +96,7 @@ function EmptyState({
           No invoices on-chain yet
         </h3>
         <p className="mt-1 text-[13px] leading-relaxed text-ink-3">
-          <em>Terminy pilnują się same</em> — deadlines that enforce themselves.
+          <em>Terminy pilnują się same</em>: deadlines that enforce themselves.
           Issue the first invoice to see it live.
         </p>
       </div>
@@ -136,12 +137,14 @@ function SkeletonRows() {
 
 export function InvoiceTable({
   invoices,
+  mandates,
   isLoading,
   onChanged,
   onNewInvoice,
   canIssue,
 }: {
   invoices: Account<Invoice>[];
+  mandates: Map<string, InvoiceMandate>;
   isLoading: boolean;
   onChanged: () => void;
   onNewInvoice: () => void;
@@ -255,6 +258,7 @@ export function InvoiceTable({
                 <InvoiceRow
                   key={invoice.address}
                   invoice={invoice}
+                  mandates={mandates}
                   now={now}
                   expanded={expandedId === invoice.address}
                   onToggle={() =>

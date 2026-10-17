@@ -24,6 +24,13 @@ import {
   formatFeePct,
   formatHms,
 } from "../lib/format";
+import { useSolanaClient } from "../lib/solana-client-context";
+import {
+  fetchTokenDelegate,
+  findMandateHolderByVault,
+  type InvoiceMandate,
+  type MandateHolder,
+} from "../lib/mandates";
 import {
   InvoiceStatus,
   getAdvanceInvoiceInstruction,
@@ -45,6 +52,7 @@ import {
   ChevronDownIcon,
   PlusIcon,
   UndoIcon,
+  XIcon,
   ZapIcon,
 } from "./ui";
 
@@ -107,12 +115,14 @@ function MoneyRow({
 
 export function InvoiceRow({
   invoice,
+  mandates,
   now,
   expanded,
   onToggle,
   onChanged,
 }: {
   invoice: Account<Invoice>;
+  mandates: Map<string, InvoiceMandate>;
   now: number;
   expanded: boolean;
   onToggle: () => void;
@@ -121,9 +131,15 @@ export function InvoiceRow({
   const { wallet } = useWallet();
   const { send, isSending, signer } = useSendTransaction();
   const { getExplorerUrl, cluster } = useCluster();
+  const client = useSolanaClient();
 
   const [advanceIn, setAdvanceIn] = useState("");
   const [advancePayout, setAdvancePayout] = useState("");
+  const [replacePrompt, setReplacePrompt] = useState<{
+    holder: MandateHolder | null;
+    delegate: Address;
+    allowance: bigint;
+  } | null>(null);
 
   const data = invoice.data;
   const myAddress = wallet?.account.address as Address | undefined;
@@ -143,9 +159,12 @@ export function InvoiceRow({
   const isCollected = data.status === InvoiceStatus.Collected;
   const total = isCollected ? data.amount + data.feePaid : data.amount + feeNow;
 
+  const mandate = mandates.get(invoice.address);
   const isUnderMandate =
     data.status === InvoiceStatus.Authorized ||
     data.status === InvoiceStatus.Overdue;
+  const mandateLost = isUnderMandate && mandate !== undefined && !mandate.live;
+  const displacedHolder = mandate?.displacedBy ?? null;
   const accruing = isDue && !isCollected && isUnderMandate && feeNow < feeMax;
   const ratePerSec = feePerSecond(data);
   const dayFee = (data.amount * BigInt(data.feeBpsPerDay)) / 10_000n;
@@ -167,7 +186,8 @@ export function InvoiceRow({
   const canCollect =
     (data.status === InvoiceStatus.Authorized ||
       data.status === InvoiceStatus.Overdue) &&
-    isDue;
+    isDue &&
+    !mandateLost;
   const canFlag = data.status === InvoiceStatus.Authorized && isDue;
   const canAdvance =
     (data.status === InvoiceStatus.Authorized ||
@@ -216,6 +236,32 @@ export function InvoiceRow({
         }),
       ];
     });
+
+  const handleAuthorizeClick = async () => {
+    if (!signer || !myAddress) {
+      await handleAuthorize();
+      return;
+    }
+    try {
+      const ata = await findAta(myAddress, data.mint);
+      const existing = await fetchTokenDelegate(client.rpc, ata);
+      if (existing && existing.delegate !== null) {
+        const holder = findMandateHolderByVault(mandates, existing.delegate);
+        const isSelf = holder !== null && holder.invoice === invoice.address;
+        if (!isSelf) {
+          setReplacePrompt({
+            holder,
+            delegate: existing.delegate,
+            allowance: existing.delegatedAmount,
+          });
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn("Mandate pre-check failed:", err);
+    }
+    await handleAuthorize();
+  };
 
   const handleRevoke = () =>
     runAction("Revoke", async () => {
@@ -390,6 +436,11 @@ export function InvoiceRow({
 
         <div className="lg:text-right">
           <StatusChip status={status} />
+          {mandateLost && (
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-warn lg:whitespace-nowrap">
+              mandate replaced
+            </p>
+          )}
         </div>
 
         <div className="lg:text-right">
@@ -575,11 +626,42 @@ export function InvoiceRow({
                 </div>
               </div>
 
+              {mandateLost && (
+                <div className="mt-4 rounded-xl border border-warn-soft bg-warn-soft/50 px-3.5 py-3">
+                  <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-warn">
+                    <AlertIcon /> Mandate replaced
+                  </p>
+                  <p className="mt-1 text-[11px] leading-snug text-ink-2">
+                    {displacedHolder ? (
+                      <>
+                        The buyer’s token account now backs invoice Nº{" "}
+                        {displacedHolder.invoiceId.toString()}. A token account
+                        can only carry one mandate at a time, so this invoice
+                        can no longer be collected.
+                      </>
+                    ) : mandate?.delegate === null ? (
+                      <>
+                        The buyer’s token account no longer authorizes this
+                        invoice. The mandate was revoked or the account was
+                        closed, so this invoice can no longer be collected.
+                      </>
+                    ) : (
+                      <>
+                        The buyer’s token account now delegates to an
+                        unrecognized authority, so this invoice can no longer be
+                        collected.
+                      </>
+                    )}{" "}
+                    The seller can issue a replacement invoice.
+                  </p>
+                </div>
+              )}
+
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 {canAuthorize && (
                   <Button
                     variant="primary"
-                    onClick={handleAuthorize}
+                    onClick={handleAuthorizeClick}
                     disabled={!canAct}
                   >
                     <PlusIcon /> Sign payment mandate
@@ -621,7 +703,7 @@ export function InvoiceRow({
                 {!hasActions && canFlag === false && (
                   <p className="text-[12px] text-ink-3">
                     {status === "collected"
-                      ? "Settled on-chain — nothing left to do."
+                      ? "Settled on-chain. Nothing left to do."
                       : status === "awaiting"
                         ? "Waiting for the buyer to sign the payment mandate."
                         : status === "active"
@@ -658,7 +740,7 @@ export function InvoiceRow({
                     <ZapIcon className="text-accent" /> Advance as investor (LP)
                   </p>
                   <p className="mt-1 text-[11px] leading-snug text-ink-3">
-                    Pay the seller early — you are repaid first, with the late
+                    Pay the seller early. You are repaid first, with the late
                     fee, when the invoice is collected.
                   </p>
                   <div className="mt-3 flex flex-wrap items-end gap-2">
@@ -708,6 +790,80 @@ export function InvoiceRow({
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {replacePrompt && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/45 p-4 pt-[10vh] backdrop-blur-[2px]"
+          onMouseDown={() => setReplacePrompt(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="replace-mandate-title"
+            className="w-full max-w-md animate-pop rounded-2xl border border-line bg-surface shadow-pop"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
+              <div>
+                <h2
+                  id="replace-mandate-title"
+                  className="font-display text-[16px] font-semibold tracking-tight"
+                >
+                  Replace an active mandate?
+                </h2>
+                <p className="mt-0.5 text-[12px] text-ink-3">
+                  An SPL token account can only carry one mandate at a time.
+                </p>
+              </div>
+              <button
+                onClick={() => setReplacePrompt(null)}
+                aria-label="Close"
+                className="inline-flex size-8 cursor-pointer items-center justify-center rounded-lg text-ink-3 transition hover:bg-surface-2 hover:text-ink"
+              >
+                <XIcon className="text-sm" />
+              </button>
+            </div>
+
+            <div className="px-5 py-4">
+              <p className="text-[13px] leading-relaxed text-ink-2">
+                This wallet’s tUSD account currently delegates up to{" "}
+                <span className="num font-medium text-ink">
+                  {formatTokenAmount(replacePrompt.allowance)} tUSD
+                </span>{" "}
+                to{" "}
+                {replacePrompt.holder ? (
+                  <>invoice Nº {replacePrompt.holder.invoiceId.toString()}</>
+                ) : (
+                  <span className="font-mono">
+                    {replacePrompt.delegate.slice(0, 4)}…
+                    {replacePrompt.delegate.slice(-4)}
+                  </span>
+                )}
+                . Signing this invoice’s mandate will replace it. The old
+                invoice can no longer be collected on-chain.
+              </p>
+              <p className="mt-2 text-[11px] leading-snug text-ink-3">
+                To keep the existing mandate, cancel and revoke it first.
+                Revoking works until the due date, as long as no advance was
+                made.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 border-t border-line px-5 py-4">
+              <Button onClick={() => setReplacePrompt(null)}>Cancel</Button>
+              <Button
+                variant="warn"
+                onClick={() => {
+                  setReplacePrompt(null);
+                  void handleAuthorize();
+                }}
+              >
+                <AlertIcon /> Replace mandate
+              </Button>
             </div>
           </div>
         </div>

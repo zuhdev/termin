@@ -5,7 +5,10 @@ import type { Account } from "@solana/kit";
 import { useCluster } from "../../components/cluster-context";
 import { useSolanaClient } from "../solana-client-context";
 import { fetchInvoices } from "../termin";
+import { fetchMandateStates, type InvoiceMandate } from "../mandates";
 import type { Invoice } from "../../generated/termin";
+
+const EMPTY_MANDATES = new Map<string, InvoiceMandate>();
 
 export function useInvoices() {
   const { cluster } = useCluster();
@@ -13,12 +16,17 @@ export function useInvoices() {
 
   const { data, isLoading, error, mutate } = useSWR(
     ["invoices", cluster] as const,
-    () => fetchInvoices(client.rpc),
+    async () => {
+      const invoices = await fetchInvoices(client.rpc);
+      const mandates = await fetchMandateStates(client.rpc, invoices);
+      return { invoices, mandates };
+    },
     { refreshInterval: 15_000, revalidateOnFocus: true }
   );
 
   return {
-    invoices: (data ?? []) as Account<Invoice>[],
+    invoices: (data?.invoices ?? []) as Account<Invoice>[],
+    mandates: data?.mandates ?? EMPTY_MANDATES,
     isLoading,
     error,
     mutate,

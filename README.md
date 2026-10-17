@@ -145,7 +145,7 @@ Connect via **Wallet Standard** — Phantom, Solflare, Backpack, Glow, Coinbase 
 
 ## Known limitations / design notes
 
-- **One SPL delegate per token account.** The delegate model means a payer's token account can hold exactly one active mandate at a time — re-authorizing replaces the previous one. The demo therefore uses one payer per invoice. Roadmap: per-invoice mandate accounts (payer-funded escrow variant) or Token-2022 delegation extensions.
+- **One SPL delegate per token account.** The delegate model means a payer's token account can hold exactly one active mandate at a time — re-authorizing replaces the previous one. The demo therefore uses one payer per invoice. The console reads the live delegate straight from the payer's token account: a replaced mandate is flagged in the table (with collection disabled, since it can never succeed) and signing a mandate with a wallet that already carries one asks for explicit confirmation first. Roadmap: per-invoice mandate accounts (payer-funded escrow variant) or Token-2022 delegation extensions.
 - **Debtor balance risk.** A mandate can be drained or revoked by the payer before the due date. Mitigations: on-chain reputation from collect/revoke history; the LP discount already prices collection risk.
 - Demo token is a plain 6-decimal SPL mint with a centralized authority — fine for a devnet demo, irrelevant to the program logic.
 

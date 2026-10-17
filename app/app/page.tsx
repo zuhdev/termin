@@ -16,7 +16,7 @@ import { AddressLink } from "../components/ui";
 
 export default function App() {
   const { status } = useWallet();
-  const { invoices, isLoading, mutate } = useInvoices();
+  const { invoices, mandates, isLoading, mutate } = useInvoices();
   const { getExplorerUrl, cluster } = useCluster();
   const slot = useSlot();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function App() {
             <p className="mt-1.5 text-[13px] leading-relaxed text-ink-2">
               Self-collecting B2B invoices on Solana.{" "}
               {connected
-                ? "You are connected — issue, authorize, or collect below. Acting as a buyer or lender? Grab test tUSD from the faucet."
+                ? "You are connected. Issue, authorize, or collect below. Acting as a buyer or lender? Grab test tUSD from the faucet."
                 : "Connect a wallet to issue, sign, or collect."}
             </p>
           </div>
@@ -61,6 +61,7 @@ export default function App() {
 
         <InvoiceTable
           invoices={invoices}
+          mandates={mandates}
           isLoading={isLoading}
           onChanged={() => void mutate()}
           onNewInvoice={() => setDialogOpen(true)}
