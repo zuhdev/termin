@@ -44,7 +44,7 @@ Anchor program at `anchor/programs/termin/src/lib.rs`.
 | `advance_invoice(amount_in, payout)` | LP     | Buys the invoice at a discount while it's Authorized/Overdue                                                      |
 | `flag_overdue`                       | anyone | Marks a due, uncollected invoice as Overdue                                                                       |
 | `collect_invoice`                    | anyone | Pulls `amount + late_fee`; waterfalls via LP when advanced                                                        |
-| `revoke_invoice`                     | payer  | Payer can cancel the mandate before collection                                                                    |
+| `revoke_invoice`                     | payer  | Cancels the mandate before the due date, while no advance is outstanding                                          |
 | `cancel_invoice`                     | issuer | Issuer can void an unauthorized invoice                                                                           |
 
 Late fee: `floor(amount · fee_bps_per_day · full_days_late / 10_000)`, capped at `amount · fee_cap_bps / 10_000`. Statuses: `Created → Authorized → (Overdue) → Collected | Cancelled | Revoked`.
@@ -74,8 +74,8 @@ Both hashes must equal the value above. The same check runs in CI (`.github/work
 anchor/programs/termin/    Anchor program (src/lib.rs) + LiteSVM test suite (src/tests.rs)
 app/                       Next.js UI (Tailwind, @solana/kit, wallet-standard, SWR)
 app/generated/termin/      Codama-generated TypeScript client (from anchor IDL)
-docs/deck.md               Slide deck (10 slides, placeholders after recording)
-scripts/demo.ts            Seed + lifecycle script: mints demo USDC, 3 payer wallets, invoices, collect
+docs/deck.html             Slide deck (10 slides, exports to docs/termin-deck.pdf)
+scripts/demo.ts            Seed + lifecycle script: mints demo tUSD, 3 payer wallets, invoices, collect
 scripts/codama-run.mjs     Programmatic Codama runner (Windows CLI workaround)
 ```
 
@@ -139,9 +139,11 @@ Connect via **Wallet Standard** — Phantom, Solflare, Backpack, Glow, Coinbase 
 
 ## Demo flow (for the video)
 
-1. Invoice 1008 is **2 days overdue** — collect it and watch the 1% late fee (50 bps/day × 2 days) get pulled on-chain.
-2. Invoice 1007 is **Created** — authorize it in the UI (one signature), then collect after the due date.
-3. Invoice 1009 was **advanced by an LP** (4,800 now, 5,000 at due) — collect and watch the waterfall: payer → LP → issuer.
+The seeder plants one fresh invoice per scenario (`npm run demo:devnet -- --base=1010`):
+
+1. Invoice **1011** was seeded **Authorized, already 2 days overdue**: collect it and watch the late fee get pulled on-chain (50 bps per full day overdue, capped at 10%).
+2. Invoice **1010** starts as **Created**: authorize it in the UI with the buyer wallet (one signature), then collect it once the due date passes (about 4 minutes after seeding).
+3. Invoice **1012** was **advanced by an LP** (4,800 paid up front against 5,000 at due): collect it and watch the waterfall: payer → LP → issuer.
 
 ## Known limitations / design notes
 
