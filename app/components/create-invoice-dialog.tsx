@@ -165,7 +165,7 @@ export function CreateInvoiceDialog({
               Issue an invoice
             </h2>
             <p className="mt-0.5 text-[12px] text-ink-3">
-              Only you sign here — the buyer authorizes a mandate later.
+              Only you sign here. The buyer authorizes a mandate later.
             </p>
           </div>
           <button
@@ -263,8 +263,8 @@ export function CreateInvoiceDialog({
 
           {!DEMO_MINT && (
             <p className="rounded-lg bg-warn-soft px-3 py-2 text-[11px] text-warn sm:col-span-2">
-              Demo token not configured — set NEXT_PUBLIC_DEMO_MINT in
-              .env.local after running the seed script.
+              Demo token not configured. Set NEXT_PUBLIC_DEMO_MINT in .env.local
+              after running the seed script.
             </p>
           )}
         </div>

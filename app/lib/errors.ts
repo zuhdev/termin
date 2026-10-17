@@ -30,8 +30,8 @@ const TERMIN_ERROR_CODES: Record<number, TerminError> = {
 };
 
 const SPL_TOKEN_ERRORS: Record<number, string> = {
-  1: "Insufficient tUSD balance — the account that must pay for this action has no (or not enough) demo tUSD. Use the faucet to top up.",
-  4: "Token authority mismatch. If this payer authorized a newer invoice with the same token account, the older mandate was replaced — re-authorize and try again.",
+  1: "Insufficient tUSD balance: the account that pays for this action doesn't have enough demo tUSD. Use the faucet to top it up.",
+  4: "Token authority mismatch. The paying account no longer delegates to this invoice. If the buyer authorized a newer invoice with the same token account, the older mandate was replaced.",
   17: "The token account is frozen.",
 };
 

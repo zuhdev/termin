@@ -113,7 +113,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         ok: false,
-        error: "One faucet request per minute — try again shortly.",
+        error: "One faucet request per minute. Try again shortly.",
       },
       { status: 429 }
     );
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
   } catch {
     lastRequestByIp.delete(ip);
     return Response.json(
-      { ok: false, error: "Minting failed — please try again in a moment." },
+      { ok: false, error: "Minting failed. Please try again in a moment." },
       { status: 502 }
     );
   }

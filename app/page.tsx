@@ -13,7 +13,7 @@ import {
 } from "./components/ui";
 
 export const metadata: Metadata = {
-  title: "termin — invoices that pay themselves",
+  title: "termin: invoices that pay themselves",
   description:
     "Self-collecting B2B invoices on Solana: a signed payment mandate, automatic collection on the due date, on-chain late fees, and optional investor advances. Live on devnet.",
 };
@@ -171,7 +171,7 @@ export default function Landing() {
         <nav className="mx-auto flex w-fit max-w-full items-center gap-0.5 rounded-full border border-line bg-surface/85 py-1.5 pl-3 pr-1.5 shadow-card backdrop-blur-md sm:gap-1">
           <Link
             href="/"
-            aria-label="termin — home"
+            aria-label="termin home"
             className="mr-2 shrink-0 transition hover:opacity-80"
           >
             <Logo />
@@ -236,9 +236,9 @@ export default function Landing() {
 
             <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-white/75">
               Self-collecting B2B invoices on Solana. The buyer signs a payment
-              mandate once — collection fires itself on the due date, late fees
-              enforce themselves on-chain, and investors can advance cash
-              against unpaid invoices.
+              mandate once, and collection happens on its own when the due date
+              passes. Late fees enforce themselves on-chain, and investors can
+              advance cash against unpaid invoices.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -304,7 +304,7 @@ export default function Landing() {
                   <div className="h-full w-[62%] rounded-full bg-warn" />
                 </div>
                 <p className="num mt-2 font-mono text-[10.5px] text-ink-3">
-                  next +25 tUSD in 11:59:42 — fees settle in whole days
+                  next +25 tUSD in 11:59:42 · fees settle in whole days
                 </p>
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-dashed border-line-strong pt-3 font-mono text-[10.5px] text-ink-3">
@@ -345,17 +345,17 @@ export default function Landing() {
             <ProblemStat
               value="69%"
               tone="warn"
-              note="of Polish companies get paid after the due date — the 2nd worst result in the EU (Intrum European Payment Report)."
+              note="of Polish companies get paid after the due date: the 2nd worst result in the EU (Intrum European Payment Report)."
             />
             <ProblemStat
-              value="30–60 days"
+              value="30 to 60 days"
               tone="neutral"
               note="of chasing by hand: reminders, phone calls, awkward emails. The invoice asks for payment; nothing enforces it."
             />
             <ProblemStat
               value="2026"
               tone="accent"
-              note="KSeF brings mandatory e-invoicing to every Polish business — the moment to automate collection is now."
+              note="KSeF brings mandatory e-invoicing to every Polish business. The moment to automate collection is now."
             />
           </div>
         </section>
@@ -377,17 +377,17 @@ export default function Landing() {
                 the late-fee schedule. No signup, no accounts.
               </StepItem>
               <StepItem step="2" title="Authorize">
-                The buyer signs one payment mandate — an SPL delegate on their
-                token account. Revocable until the due date, never after.
+                The buyer signs one payment mandate: an SPL delegate on their
+                token account. It can be revoked before the due date, not after.
               </StepItem>
               <StepItem step="3" title="Collect">
-                On the due date, collection fires itself. Funds move buyer →
-                seller. The late fee accrues daily on a transparent schedule and
-                enforces itself on-chain.
+                When the due date passes, anyone can trigger collection. Funds
+                move from buyer to seller. The late fee accrues daily on a
+                transparent schedule and is enforced on-chain.
               </StepItem>
               <StepItem step="4" title="Advance (optional)">
                 An investor can pay the seller early. The advance is repaid
-                first — with the late fee — when the invoice settles.
+                first, with the late fee, when the invoice settles.
               </StepItem>
             </div>
 
@@ -423,8 +423,8 @@ export default function Landing() {
                 </div>
                 <p className="mt-4 border-t border-dashed border-line-strong pt-3 text-[11px] leading-relaxed text-ink-3">
                   The seller already got 4,800 on day one. When the buyer pays
-                  5,050, the investor is repaid first and the remainder settles
-                  instantly — atomic, on-chain.
+                  5,050, the investor is repaid first and the rest reaches the
+                  seller in the same atomic transaction.
                 </p>
               </div>
             </div>
@@ -442,15 +442,15 @@ export default function Landing() {
               collection needs nobody&apos;s cooperation.
             </FeatureCard>
             <FeatureCard icon={<ClockIcon />} title="A meter, not penalties">
-              The late fee accrues per second on a transparent schedule, capped
-              in the contract — no collection agency, no drama.
+              The late fee accrues by the day on a transparent schedule, capped
+              in the contract: no collection agency, no drama.
             </FeatureCard>
             <FeatureCard icon={<CoinsIcon />} title="No backend, no custodian">
-              Funds move buyer → seller (and investor) directly. The app is a
-              window, never a middleman.
+              Funds move from buyer to seller (and the investor) directly. The
+              app is a window, never a middleman.
             </FeatureCard>
             <FeatureCard icon={<CheckIcon />} title="Observable by default">
-              Every invoice, mandate and collection is a live Solana account —
+              Every invoice, mandate and collection is a live Solana account,
               auditable by anyone, forever.
             </FeatureCard>
           </div>
@@ -482,9 +482,9 @@ export default function Landing() {
                 </h2>
                 <p className="mt-4 max-w-xl text-[13px] leading-relaxed text-[#9aa0a5]">
                   An LP can advance cash against an authorized invoice at a
-                  discount. The advance repays first — with the late fee — the
-                  moment collection fires. Positions are per-invoice, revocable,
-                  and fully on-chain.
+                  discount. The advance is repaid first, with the late fee, the
+                  moment collection happens. Positions are per-invoice and fully
+                  on-chain.
                 </p>
               </div>
               <div className="rounded-[18px] border border-[#2a2e32] bg-[#1c1f22] p-5 font-mono text-[12px]">
@@ -507,7 +507,7 @@ export default function Landing() {
                 See it run on devnet.
               </h2>
               <p className="mt-1.5 text-[13px] text-ink-2">
-                Connect any Solana wallet — issue your first invoice in 60
+                Connect any Solana wallet and issue your first invoice in 60
                 seconds. Live fee meter included.
               </p>
             </div>
@@ -537,7 +537,7 @@ export default function Landing() {
             </span>
           </span>
           <span className="inline-flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span>Devnet prototype — not audited</span>
+            <span>Devnet prototype, not audited</span>
             <span
               className="font-mono"
               title="Reproducible build hash (solana-verify)"

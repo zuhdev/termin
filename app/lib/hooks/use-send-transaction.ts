@@ -54,7 +54,7 @@ export function useSendTransaction() {
         description: "Approve the transaction to continue",
       });
       onSignedRef.current = () => {
-        toast.loading("Submitted — confirming", {
+        toast.loading("Submitted, confirming", {
           id: toastId,
           description: `Waiting for ${cluster} to finalize`,
         });
@@ -62,7 +62,7 @@ export function useSendTransaction() {
       const stillWaiting = setTimeout(() => {
         toast.loading("Still waiting for wallet approval", {
           id: toastId,
-          description: "Check your wallet app — keep this tab open",
+          description: "Check your wallet app and keep this tab open",
         });
       }, STILL_WAITING_MS);
 

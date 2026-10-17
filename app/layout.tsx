@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Newsreader } from "next/font/google";
+import { JetBrains_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./components/providers";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
   ),
-  title: "termin — invoices that pay themselves",
+  title: "termin: invoices that pay themselves",
   description:
     "Self-collecting B2B invoices on Solana: signed payment mandates, automatic late fees, optional investor advances. HackYeah 2026 · Superteam Poland track.",
   icons: {
@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistMono.variable} ${newsreader.variable} antialiased`}
+        className={`${jetbrainsMono.variable} ${newsreader.variable} antialiased`}
       >
         <Providers>{children}</Providers>
       </body>

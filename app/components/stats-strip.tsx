@@ -120,7 +120,7 @@ export function StatsStrip({
         value={formatTokenAmount(stats.overdue)}
         note={
           stats.overdueCount === 0
-            ? "nothing late — dobrze"
+            ? "nothing late · dobrze"
             : `${stats.overdueCount}${stats.overdueCount === 1 ? " invoice" : " invoices"} late`
         }
         tone={stats.overdueCount > 0 ? "warn" : "default"}

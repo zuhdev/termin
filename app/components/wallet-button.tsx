@@ -169,7 +169,7 @@ export function WalletButton() {
                 ))}
               </div>
               <p className="mt-1.5 border-t border-line px-2.5 pb-1 pt-2.5 text-[10px] leading-snug text-ink-3">
-                Any Solana Wallet Standard wallet works — Phantom, Solflare,
+                Any Solana Wallet Standard wallet works: Phantom, Solflare,
                 Backpack and 20+ more. On Android, Mobile Wallet Adapter is
                 detected automatically.
               </p>

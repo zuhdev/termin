@@ -26,7 +26,7 @@ function sleep(ms: number) {
 }
 
 export const TX_EXPIRED_MESSAGE =
-  "Wallet approval took too long — the transaction expired before it reached the network. Please try again.";
+  "Wallet approval took too long, so the transaction expired before it reached the network. Please try again.";
 
 export const WALLET_LOST_MESSAGE =
   "Wallet connection was lost. Reconnect your wallet and try again.";
