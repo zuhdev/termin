@@ -17,15 +17,6 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "collected", label: "Collected" },
 ];
 
-const STATUS_RANK: Record<DisplayStatus, number> = {
-  overdue: 0,
-  active: 1,
-  awaiting: 2,
-  collected: 3,
-  revoked: 4,
-  cancelled: 4,
-};
-
 function matchesFilter(status: DisplayStatus, filter: FilterKey): boolean {
   switch (filter) {
     case "all":
@@ -168,12 +159,7 @@ export function InvoiceTable({
           matchesFilter(displayStatus(inv.data, now), filter) &&
           matchesQuery(inv, query)
       )
-      .sort((a, b) => {
-        const rankA = STATUS_RANK[displayStatus(a.data, now)];
-        const rankB = STATUS_RANK[displayStatus(b.data, now)];
-        if (rankA !== rankB) return rankA - rankB;
-        return Number(b.data.createdTs - a.data.createdTs);
-      });
+      .sort((a, b) => Number(b.data.createdTs - a.data.createdTs));
   }, [invoices, filter, query, now]);
 
   const counts = useMemo(() => {
